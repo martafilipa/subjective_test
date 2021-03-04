@@ -1,0 +1,28 @@
+doctype html
+html
+    head
+        title Which image is more natural?
+    body(style='margin: 0')
+    form(action='/test' method='POST')
+        div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; margin: 0')
+            div(style = 'width: 940px; padding: 5px; margin: 0px; display: inline-block; flex-shrink: 0; flex-grow: 0; align-content: center')
+                p(style='margin: 0; text-align: center; padding-top: 1px; font-family:arial; font-size: 21px') 
+                    | A
+                image(src=src_L, alt='A', name='0')
+                button(type="submit", name="value", value=0, style='position: relative; left: 46%; width: 70px', id='A') Image A
+            div(style = 'width: 940px; padding: 5px; margin:0px; display: inline-block; flex-shrink: 0; flex-grow: 0; align-content: center', id = 'div')
+                p(style='margin: 0; padding-top: 1px; text-align: center; font-family:arial; font-size: 21px') 
+                    | B
+                img(src= src_R, alt='B', name='1')
+                button(type="submit", name="value", value=1, style='position: relative; left: 46%; width: 70px', id='B') Image B
+    div(style='left: 0; right: 0; bottom:0; padding-top: 5px;padding-bottom: 0px; text-align:center')
+        progress(value=current max=nPairs style='width:99%; height: 15px')
+    
+    script.
+        document.addEventListener("keydown", function onEvent(event){
+        if (event.key === "ArrowLeft") {
+        document.getElementById("A").click();
+        }
+        if(event.key === "ArrowRight"){
+        document.getElementById("B").click();
+        }});

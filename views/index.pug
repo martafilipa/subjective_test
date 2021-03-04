@@ -1,0 +1,73 @@
+doctype html
+html
+    head
+        style.
+            .red-input {
+            border: 1px solid red;
+            }
+        script.
+            function validateForm() {
+            console.log("FUNCTION FORM!!")
+            var fields = ['name', 'age', 'gender', 'display']
+            var nameForm = document.forms['userForm'];
+            var i, l = fields.length;
+            var fieldname;
+            for (i = 0; i < l; i++) {
+                fieldname = fields[i];
+                fieldForm = document.forms["userForm"][fieldname];
+                if (fieldForm.value === "" || fieldForm.value === null) {
+                    alert(fieldname + " can not be empty");
+                if(fieldname === 'gender'){
+                    fieldForm.style.boxShadow = '0px 2px 8px rgb(255, 0, 0);';
+                }
+                else{
+                    fieldForm.style.borderColor = 'red'
+                }
+                return false;
+                }
+                else{
+                    fieldForm.style.borderColor = 'green'
+                }
+            }
+            return true;
+            }
+        title Subjective Test
+    body
+        h1 Subjective Test - How fake is my image? 
+        h2 Instructions
+        p In this test, you will be asked to observe and compare the quality of two images shown side by side, image A on the left side and image B on the right side.
+        p The objective of the test is to evaluate the impact of generated content on the perceived image quality. Your task is to look at both images carefully and then select one of the two options: 
+        p A is better
+        p B is better
+        h2 User Information
+
+        form(name='userForm', method="POST", action="/start", id = 'form', required)
+            P
+                | Name: 
+                input(type='text', name='name', value='', required)
+            P
+                | Age: 
+                input(type='number', name='age', value='', min="10", max="100", required)
+            P 
+                | Gender: 
+                input#male(type='radio', name='gender', value='male', required)
+                label(for='male') Male
+                input#female(type='radio', name='gender', value='female')
+                label(for='female') Female
+                input#other(type='radio', name='gender', value='other')
+                label(for='other') Other
+            P 
+                | Display (inches): 
+                input(type='number', name='display', value='', min="10", max="60", required)
+                script.
+                    var res = [screen.width, screen.height];
+                    var f = document.getElementById('form');
+                    i = document.createElement("Input");
+                    i.setAttribute("type", "hidden");
+                    i.setAttribute("value", res);
+                    i.setAttribute("name", "resolution")
+                    f.appendChild(i);             
+
+            button(type="submit") start test
+
+    
