@@ -1,0 +1,28 @@
+doctype html
+html
+    link(rel='preconnect' href='https://fonts.gstatic.com')
+    link(href='https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap' rel='stylesheet')  
+    head
+        link(rel='icon', href='./public/images/ist_logo.png')
+        title Subjective Test
+    style
+        include style.css
+    body(style='background-color: #f4fffd')
+    h1(style='text-align: center; font-size: 3em;') End of Training Phase
+    div(class='box')
+        h2(style='font-size: 2.5em; margin:0.4em')
+            image(src='./public/images/icon_test.svg', name='icon_test', style='vertical-align: middle; width: 80px; height:auto; margin:0; margin-right: 10px; padding:0')
+            | Start Testing Phase
+        div(style='margin-left: 30px; margin-right: 30px; font-size: 1.7em;')
+            p 
+                | You have now finished the 
+                strong training phase 
+                | of this test. 
+            p
+                | Now that you are used to the test environment you can start the 
+                strong test phase 
+                | by clicking the corresponding button.
+            div(style = '    display: block; text-align: center; margin-bottom:20px')
+                form(action='/test' method='GET')
+                    button(type='submit') Start Test
+

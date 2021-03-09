@@ -1,73 +1,72 @@
-doctype html
-html
+doctype html 
+html 
+    link(rel='preconnect' href='https://fonts.gstatic.com')
+    link(href='https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap' rel='stylesheet')   
     head
-        style.
-            .red-input {
-            border: 1px solid red;
-            }
-        script.
-            function validateForm() {
-            console.log("FUNCTION FORM!!")
-            var fields = ['name', 'age', 'gender', 'display']
-            var nameForm = document.forms['userForm'];
-            var i, l = fields.length;
-            var fieldname;
-            for (i = 0; i < l; i++) {
-                fieldname = fields[i];
-                fieldForm = document.forms["userForm"][fieldname];
-                if (fieldForm.value === "" || fieldForm.value === null) {
-                    alert(fieldname + " can not be empty");
-                if(fieldname === 'gender'){
-                    fieldForm.style.boxShadow = '0px 2px 8px rgb(255, 0, 0);';
-                }
-                else{
-                    fieldForm.style.borderColor = 'red'
-                }
-                return false;
-                }
-                else{
-                    fieldForm.style.borderColor = 'green'
-                }
-            }
-            return true;
-            }
+        link(rel='icon', href='./public/images/ist_logo.png')
         title Subjective Test
-    body
-        h1 Subjective Test - How fake is my image? 
-        h2 Instructions
-        p In this test, you will be asked to observe and compare the quality of two images shown side by side, image A on the left side and image B on the right side.
-        p The objective of the test is to evaluate the impact of generated content on the perceived image quality. Your task is to look at both images carefully and then select one of the two options: 
-        p A is better
-        p B is better
-        h2 User Information
+    style
+        include style.css
+    body(style='background-color: #f4fffd')
+    h1(style='text-align: center; font-size: 3em;') How fake is my image?
+    div(class='box', id='box2')
+        h2(style='font-size: 2.5em; margin:0.4em') 
+            image(src='./public/images/info_icon.svg', name='info_icon', style='vertical-align: middle; width: 80px; height:auto; margin:0; margin-right: 10px; padding:0') Instructions
+        div(style='margin-left: 30px; margin-right: 30px; font-size: 1.7em;')
+            p(style='margin-block-end: 0')
+                | The goal of this test is to evaluate the impact of generated content on perceived image quality.
+            p(style='margin-block: 0.5em 0;text-align: justify; text-justify: inter-word;')
+                | During the test, you will observe and compare two images shown side by side, image A on the left side and image B on the right side. 
+                | Your task is to look carefully at both images and then select the one that appears 
+                strong more natural 
+                | to you.
+            
+                | To select the image, either use the mouse to click on the corresponding button or press the left or right arrow key in your keyboard to select 
+                | image A or B, respectively.
+            p(style='margin-block: 0.5em 0; text-align: justify; text-justify: inter-word;')
+                | After entering the user information required bellow you will be presented with a 
+                strong training phase 
+                | that serves the purpose of familiarize you 
+                | with the test environment. 
+            p(style='margin-block: 0.5em 0;text-align: justify; text-justify: inter-word;')
+                | When the training phase is completed starts the 
+                strong test phase 
+                | where, as described previously, your assessments will be collected.
+            p(style='margin-block: 0.5em 0;text-align: justify; text-justify: inter-word;')
+                | This test should take approximadetly 30 minutes.
 
-        form(name='userForm', method="POST", action="/start", id = 'form', required)
-            P
-                | Name: 
-                input(type='text', name='name', value='', required)
-            P
-                | Age: 
-                input(type='number', name='age', value='', min="10", max="100", required)
-            P 
-                | Gender: 
-                input#male(type='radio', name='gender', value='male', required)
-                label(for='male') Male
-                input#female(type='radio', name='gender', value='female')
-                label(for='female') Female
-                input#other(type='radio', name='gender', value='other')
-                label(for='other') Other
-            P 
-                | Display (inches): 
-                input(type='number', name='display', value='', min="10", max="60", required)
-                script.
-                    var res = [screen.width, screen.height];
-                    var f = document.getElementById('form');
-                    i = document.createElement("Input");
-                    i.setAttribute("type", "hidden");
-                    i.setAttribute("value", res);
-                    i.setAttribute("name", "resolution")
-                    f.appendChild(i);             
-
-            button(type="submit") start test
-
-    
+    div(class='box', style='padding-bottom: 40px', id='box_form')
+        h2(style='font-size: 2.5em; margin:0.4em;') 
+            image(src='./public/images/user_icon.svg', name='user_icon', style='vertical-align: middle; width: 70px; height:auto; margin:0; margin-right: 20px; padding:0') User Information 
+        div(style='margin-left: 30px; font-size: 1.7em')
+            form(name='userForm', method="POST", action="/start", id = 'form', autocomplet='off',required)
+                div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; align-items: baseline ;')
+                    div(style = 'display: inline-block; align-content: center')
+                        | Name:
+                        input(type='text', name='name', value='', autocomplete="off", required)
+                    div(style = 'display: inline-block; align-content: center')
+                        | Age: 
+                        input(type='number', name='age', value='', min="10", max="100", required)
+                    div(style = 'display: flex; flex-direction:row; flex-wrap:wrap; align-content: baseline')
+                        | Gender: 
+                        input#male(type='radio', name='gender', value='male', required)
+                        | Male
+                        input#female(type='radio', name='gender', value='female')
+                        | Female
+                        input#other(type='radio', name='gender', value='other')
+                        |Other
+                    div(style = 'display: inline-block; align-content: center')
+                        | Display 
+                        small [in]
+                        | :
+                        input(type='number', name='display', value='', min="10", max="60", required)
+                    div(style = 'display: inline-block; align-content: center; margin-top:')
+                        button(type="submit") Start Training
+    script.
+        var res = [screen.width, screen.height];
+        var f = document.getElementById('form');
+        i = document.createElement("Input");
+        i.setAttribute("type", "hidden");
+        i.setAttribute("value", res);
+        i.setAttribute("name", "resolution")
+        f.appendChild(i); 

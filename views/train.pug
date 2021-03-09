@@ -1,45 +1,44 @@
 doctype html
 html
+    link(rel='preconnect' href='https://fonts.gstatic.com')
+    link(href='https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap' rel='stylesheet')  
     head
+        link(rel='icon', href='./public/images/ist_logo.png')
         title Which image is more natural?
+    style
+        include style.css
     body(style='margin: 0')
-    if(ans_user != null)
-        if(ans_user == ans_right)
-            if(ans_right)
-                - var border_L = 'border: 2px solid #FFFFFF';
-                - var border_R = 'border: 2px solid #00FF00';
-            else
-                - var border_L = 'border: 2px solid #00FF00';
-                - var border_R = 'border: 2px solid #FFFFFF';
-        else
-            if(ans_right)
-                - var border_L = 'border: 2px solid #FF0000';
-                - var border_R = 'border: 2px solid #00FF00';
-            else
-                - var border_L = 'border: 2px solid #00FF00';
-                - var border_R = 'border: 2px solid #FF0000';
-
+    if(ans)
+        - var right = '(Best)'
+        - var left = ''
+        - var button_R = 'submit'
+        - var button_L = 'button'
+        - var onclick_R = ''    
+        - var onclick_L = "alert('Please select the more natural image')"
+    else 
+        - var left = '(Best)'
+        - var right = ''
+        - var button_L = 'submit'
+        - var button_R = 'button'
+        - var onclick_L = ''
+        - var onclick_R = "alert('Please select the more natural image')"
     form(action='/train' method='POST')
-        div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; margin: 0')
-            div(style = 'width: 940px; padding: 5px; margin: 0px; display: inline-block; flex-shrink: 0; flex-grow: 0; align-content: center')
-                p(style='margin: 0; text-align: center; padding-top: 1px; font-family:arial; font-size: 21px') 
-                    | A
-                image(src=src_L, alt='A', name='0', id ='A', style = border_L)
-                if(ans_user == '' || ans_user == null)
-                    button(type="submit", name="value", value=0, style='position: relative; left: 46%; width: 70px;', id='A') Image A
-            div(style = 'width: 940px; padding: 5px; margin:0px; display: inline-block; flex-shrink: 0; flex-grow: 0; align-content: center', id = 'div')
-                p(style='margin: 0; padding-top: 1px; text-align: center; font-family:arial; font-size: 21px') 
-                    | B
-                img(src= src_R, alt='B', name='1', id='B', style = border_R)
-                if(ans_user == '' || ans_user == null)
-                    button(type="submit", name="value", value=1, style='position: relative; left: 46%; width: 70px', id='B') Image B
-
-        if( !(ans_user == '' || ans_user == null))
-            button(type="submit", name="value", value='', style='position: relative; left: 46%; width: 100px', id='B') Next Image
-
-    div(style='left: 0; right: 0; bottom:0; padding-top: 5px;padding-bottom: 0px; text-align:center')
-        progress(value=current max=nTrain style='width:99%; height: 15px')
-    
+        div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; margin: 0; ')
+            div(style = 'padding: 5px; padding-bottom: 0px; padding-top: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
+                p(style='margin: 0; margin-block: 0; text-align: center; padding-top: 1px; font-size: 21px') 
+                    strong A 
+                    | #{left}
+                image(src=src_L, alt='A', name='0', )
+                button(type=button_L, name="value", value=0, class="btn-test", id='A', onclick=onclick_L) Image A
+            div(style = 'padding: 5px; padding-bottom: 0px; padding-top: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
+                p(style='margin: 0; margin-block: 0; padding-top: 1px; text-align: center; font-size: 21px') 
+                    strong B 
+                    | #{right}
+                img(src= src_R, alt='B', name='1', style='display: block;')
+                button(type=button_R, name="value", value=1, class="btn-test", id='B', onclick=onclick_R,) Image B
+    div(style='left: 0; right: 0; bottom:0; padding: 0px; margin: 0px; height: 25px; display: flex; justify-content: center;')
+        progress(value=current max=nPairs)
+        
     script.
         document.addEventListener("keydown", function onEvent(event){
         if (event.key === "ArrowLeft") {

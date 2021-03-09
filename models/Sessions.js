@@ -35,9 +35,6 @@ const testSchema = new Schema({
     resolution:{
       type:[Number]
     }, 
-    train: {
-      type: [Number],
-    }
   });
   
 module.exports = mongoose.model("Sessions", testSchema);

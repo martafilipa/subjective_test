@@ -67,7 +67,8 @@ app.post('/start', async (req, res) => {
                 'display': req.body.display, 
                 'age': req.body.age, 
                 'name': req.body.name, 
-                'resolution': req.body.resolution.split(',')
+                'resolution': req.body.resolution.split(','),
+                'current': 0
     },
         $push: {'time': Date()} }
     )
@@ -75,7 +76,7 @@ app.post('/start', async (req, res) => {
                 console.log("Updated: %j", obj)
 
                 // console.log('Updated - ' + obj);
-                res.redirect(303, '/test');
+                res.redirect(303, '/train');
             })
             .catch((err) => {
                 console.log('Error: ', err);
@@ -84,130 +85,118 @@ app.post('/start', async (req, res) => {
 })
 
 app.get('/test', async (req, res) => {
-    // try {
-    //     const session = await Sessions.findOne({'id' :req.session.id});
-    //     if(!session){
-    //         res.redirect('/error');
-    //     }
-    //     else{
 
-    //     }
-    // }
-    // catch(err){
-
-    // }
-    const session = await Sessions.findOne({'id' :req.session.id});
-
-    const pair = await Pairs.findOne({'id' :session.order[session.current]});
-
-    if(session.current > nPairs){
-        Sessions.updateOne(
-            { 'id': req.session.id }, 
-            {$set: {'current': -1}, 
-            $push: {'time': Date()} }
-        )
-            .then((obj) => {
-                // console.log('Updated - ' + obj);
-                res.redirect('/end');
-            })
-            .catch((err) => {
-                console.log('Error: ', err);
-            })
-    }
-    else{
-        Sessions.updateOne(
-            { 'id': req.session.id }, 
-            {$push: {'time': Date()} }
-        )
-            .then((obj) => {
-                res.render('test', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
+    try {
+        const session = await Sessions.findOne({'id' :req.session.id})
+        try {
+            const pair = await Pairs.findOne({'id' : session.order[session.current]})
+            res.render('test', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
                 current: session.current, nPairs: nPairs});
-            })
-            .catch((err) => {
-                console.log('Error: ', err);
-            })
+        } catch (err) {
+            console.log('Error: ', err);
+            res.render('error')
+        }
+    } catch (err) {
+        console.log('Error: ', err);
+        res.render('error')
     }
+})
+
+app.post('/test', async (req, res) => {
+
+    try {
+        const session = await Sessions.findOne({'id' :req.session.id})
+        if(session.current >= nPairs - 1){
+            Sessions.updateOne(
+                { 'id': req.session.id }, 
+                {$set: {'current': -1}, 
+                $push: {'time': Date()}}
+            )
+                .then((obj) => {
+                    res.redirect(303, '/end');
+                })
+                .catch((err) => {
+                    console.log('Error: ', err);
+                })
+        }
+        else{
+            Sessions.updateOne(
+                { 'id': req.session.id },
+                {$push: {'time': Date()},
+                $push: { 'judgments':  req.body.value},
+                $inc: {'current': 1} }
+            )
+                .then((obj) => {
+                    res.redirect(303, '/test');
+                })
+                .catch((err) => {
+                    console.log('Error: ', err);
+                })
+        }
+    }
+        catch (err) {
+            console.log('Error: ', err);
+            res.render('error')
+        }
 })
 
 app.get('/train', async (req, res) => {
-    // try {
-    //     const session = await Sessions.findOne({'id' :req.session.id});
-    //     if(!session){
-    //         res.redirect('/error');
-    //     }
-    //     else{
 
-    //     }
-    // }
-    // catch(err){
-
-    // }
-    const session = await Sessions.findOne({'id' :req.session.id});
-    
-    console.log('Current id:', session.current);
-    const pair = await Train.findOne({'id' : session.current});
-
-    console.log(pair)
-
-    if(session.current > nTrain){
-        Sessions.updateOne(
-            { 'id': req.session.id }, 
-            {$set: {'current': 0}, 
-            $push: {'time': Date()} }
-        )
-            .then((obj) => {
-                // console.log('Updated - ' + obj);
-                res.redirect('/end');
-            })
-            .catch((err) => {
-                console.log('Error: ', err);
-            })
-    }
-    else{
-        Sessions.updateOne(
-            { 'id': req.session.id },
-            {$push: {'time': Date()} }
-        )
-            .then((obj) => {
-                console.log("TRAIN: ", session.train)
-                res.render('train', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
-                ans_right: pair.res, ans_user: session.train[session.current -1], current: session.current, nTrain: nTrain});
-            })
-            .catch((err) => {
-                console.log('Error: ', err);
-            })
-    }
-})
-
-
-app.post('/test', async (req, res) => {
-    // console.log("Request: %j", req.body)
-    Sessions.updateOne(
-        { 'id': req.session.id }, 
-        { $push: { 'judgments':  req.body.value} ,
-        $inc: {'current': 1} },
-    )
-        .then((obj) => {
-            // console.log('Updated - ' + obj);
-            res.redirect(303, '/test');
-        })
-        .catch((err) => {
+    try {
+        const session = await Sessions.findOne({'id' :req.session.id})
+        try {
+            const pair = await Train.findOne({'id' : session.current})
+            res.render('train', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
+            current: session.current, nPairs: nTrain, ans: pair.res});
+        } catch (err) {
             console.log('Error: ', err);
-        })
+            res.render('error')
+        }
+    } catch (err) {
+        console.log('Error: ', err);
+        res.render('error')
+    }
 })
+
 app.post('/train', async (req, res) => {
-    Sessions.updateOne(
-        { 'id': req.session.id }, 
-        { $push: { 'train':  req.body.value} ,
-        $inc: {'current': 1} },
-    )
-        .then((obj) => {
-            // console.log('Updated - ' + obj);
-            res.redirect(303, '/train');
-        })
-        .catch((err) => {
+
+    try {
+        const session = await Sessions.findOne({'id' :req.session.id})
+        if(session.current >= nTrain - 1){
+            Sessions.updateOne(
+                { 'id': req.session.id }, 
+                {$set: {'current': 0}, 
+                $push: {'time': Date()}}
+            )
+                .then((obj) => {
+                    res.redirect(303, '/start');
+                })
+                .catch((err) => {
+                    console.log('Error: ', err);
+                })
+        }
+        else{
+            Sessions.updateOne(
+                { 'id': req.session.id },
+                {$push: {'time': Date()}, 
+                $inc: {'current': 1} }
+            )
+                .then((obj) => {
+                    res.redirect(303, '/train');
+                })
+                .catch((err) => {
+                    console.log('Error: ', err);
+                })
+        }
+    }
+        catch (err) {
             console.log('Error: ', err);
-        })
+            res.render('error')
+        }
+})
+
+app.get('/start', async (req, res) => {
+    res.render('start_test');
 })
 
 app.get('/end', async (req, res) => {
@@ -218,7 +207,6 @@ app.get('/error', async (req, res) => {
     res.status(404);
     res.render('error');
 })
-
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port} ... `));
