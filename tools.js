@@ -1,7 +1,10 @@
 const n = 360;
 const g = 45;        
 const gc = 9;
-const n_total = n + 72;
+const n_cross = n + 72;
+const gh = 3;
+const n_total = n_cross + 24;
+
 module.exports = {
 
     // get_order: function(){
@@ -35,7 +38,7 @@ module.exports = {
         var items   = Array.from({length: n_total}, (x, i) => i);
         var last = [];
         var res = [];
-        for(var i=0; i<n; i++){
+        for(var i=0; i<n_total; i++){
             if(last.length == 0){
                 x = randomInteger(0, items.length-1);
                 res[i] = items[x];
@@ -71,6 +74,11 @@ function getIndex(x) {
       };
     if(x < n)
         return [Math.floor(x/g)];
-    else
+    else if(x < n_cross)
         return cross[Math.floor((x-n)/gc)];
+    else{
+        console.log('IDX: ', x, ' - ', Math.floor((x-n_cross)/gh))
+        return [Math.floor((x-n_cross)/gh)]
+
+    }
 }
