@@ -31,7 +31,10 @@ const testSchema = new Schema({
     },
     display:{
       type: Number
-    }, 
+    },
+    age:{
+      type: Number
+    },
     resolution:{
       type:[Number]
     }, 

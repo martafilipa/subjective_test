@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const pairsSchema = new Schema({
-    idx: {
+    id: {
       type: Number,
       unique: true, 
       index: true,

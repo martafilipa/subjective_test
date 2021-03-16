@@ -76,9 +76,6 @@ function getIndex(x) {
         return [Math.floor(x/g)];
     else if(x < n_cross)
         return cross[Math.floor((x-n)/gc)];
-    else{
-        console.log('IDX: ', x, ' - ', Math.floor((x-n_cross)/gh))
+    else
         return [Math.floor((x-n_cross)/gh)]
-
-    }
 }

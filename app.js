@@ -21,7 +21,7 @@ var tools = require('./tools');
 const connectDB = require("./db");
 connectDB();
 
-const uri = 'mongodb://localhost:27000/test';
+const uri = 'mongodb://localhost:27017/test';
 
 app.use(bodyParser.json());
 
@@ -208,5 +208,5 @@ app.get('/error', async (req, res) => {
     res.render('error');
 })
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 80;
 app.listen(port, () => console.log(`Listening on port ${port} ... `));
