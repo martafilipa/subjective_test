@@ -41,47 +41,32 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.get('/', async (req, res) => {
-    req.session.isAuth = true;
-    console.log('ID:', req.session.id);
-    console.log('Order: ', tools.get_order()); 
-    const session = new Sessions({
-        id: req.session.id, 
-        order: tools.get_order(),
-        current: 0
-    })
-    session.save()
-        .then(() => {
-            res.render('index');
-        })
-        .catch((err) => {
-            console.log('Error: ', err);
-            res.render('index');
-        })
+    
+    res.render('index');
 })
 
 app.post('/start', async (req, res) => {
-    console.log("Request: %j", req.body)
-    console.log("Resolution: ", req.body.resolution.split(','))
-    Sessions.updateOne(
-        { 'id': req.session.id }, 
-        {$set: {'gender': req.body.gender,
-                'display': req.body.display, 
-                'age': req.body.age, 
-                'name': req.body.name, 
-                'resolution': req.body.resolution.split(','),
-                'current': 0
-    },
-        $push: {'time': Date()} }
-    )
-            .then((obj) => {
-                console.log("Updated: %j", obj)
-
-                // console.log('Updated - ' + obj);
-                res.redirect(303, '/train');
-            })
-            .catch((err) => {
-                console.log('Error: ', err);
-            })
+    // console.log("Request: %j", req.body)
+    // console.log("Resolution: ", req.body.resolution.split(','))
+    req.session.isAuth = true;
+    Sessions.insertMany({
+        id: req.session.id, 
+        order: tools.get_order(),
+        gender: req.body.gender,
+        display: req.body.display, 
+        age: req.body.age, 
+        name: req.body.name, 
+        resolution: req.body.resolution.split(','),
+        time: Date(),
+        current: 0
+    })
+        .then((obj) => {
+            console.log("Updated: %j", obj)
+            res.redirect(303, '/train');
+        })
+        .catch((err) => {
+            console.log('Error: ', err);
+        })
     
 })
 
