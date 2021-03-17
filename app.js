@@ -42,8 +42,8 @@ app.set('view engine', 'pug');
 
 app.get('/', async (req, res) => {
     req.session.isAuth = true;
-    // console.log('ID:', req.session.id);
-    // console.log('Order: ', tools.get_order()); 
+    console.log('ID:', req.session.id);
+    console.log('Order: ', tools.get_order()); 
     const session = new Sessions({
         id: req.session.id, 
         order: tools.get_order(),
@@ -55,6 +55,7 @@ app.get('/', async (req, res) => {
         })
         .catch((err) => {
             console.log('Error: ', err);
+            res.render('index');
         })
 })
 
