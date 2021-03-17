@@ -61,12 +61,20 @@ html
                         | :
                         input(type='number', name='display', value='', min="10", max="60", required)
                     div(style = 'display: inline-block; align-content: center; margin-top:')
-                        button(type="submit") Start Training
+                        button(id="start_button",type="submit") Start Training
     script.
+        if(screen.width < 1920 || screen.height < 1080){
+            alert("To take part in this test you need a display resolution of at least: 1920x1080.\nCurrently your resolution is "+ screen.width+ "x"+ screen.height+".");
+            document.getElementById("start_button").disabled = true;
+        }
+        if(screen.width >= 1920 && screen.height >= 1080)
+            document.getElementById("start_button").disabled = false;
+            
         var res = [screen.width, screen.height];
         var f = document.getElementById('form');
         i = document.createElement("Input");
         i.setAttribute("type", "hidden");
         i.setAttribute("value", res);
         i.setAttribute("name", "resolution")
-        f.appendChild(i); 
+        f.appendChild(i);
+        

@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({
 app.use("/public", express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret : 'key that will sign cookie', 
+    secret : '2Ayuj5hb#m3rd6x_&zbSA[wTC[Z-Vy', 
     resave : false, 
     saveUninitialized : false, 
 }));
