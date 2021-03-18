@@ -14,7 +14,7 @@ const nTrain = 3;
 const app = express();
 const Pairs = require("./models/Pairs");
 const Sessions = require("./models/Sessions");
-const Train = require("./models/Trains");
+const Trains = require("./models/Trains");
 
 var tools = require('./tools');
 
@@ -140,7 +140,7 @@ app.get('/train', (req, res) => {
             render('error');
         }
         else{
-            Pairs.findOne({'id' : sess.order[sess.current]}, function(err, pair) {
+            Trains.findOne({'id' : sess.current}, function(err, pair) {
                 if (err){
                     console.log('Error: ', err);
                     render('error');
