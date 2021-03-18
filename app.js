@@ -71,13 +71,13 @@ app.post('/start', (req, res) => {
 
 app.get('/test', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
-        if (err){
+        if (err || sess == null){
             console.log('Error: ', err);
             render('error');
         }
         else{
             Pairs.findOne({'id' : sess.order[sess.current]}, function(err, pair) {
-                if (err){
+                if (err || pair == null){
                     console.log('Error: ', err);
                     render('error');
                 }
@@ -92,7 +92,7 @@ app.get('/test', (req, res) => {
 
 app.post('/test', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
-        if (err){
+        if (err || sess == null){
             console.log('Error: ', err);
             render('error');
         }
@@ -135,13 +135,13 @@ app.post('/test', (req, res) => {
 
 app.get('/train', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
-        if (err){
+        if (err || sess == null){
             console.log('Error: ', err);
             render('error');
         }
         else{
             Trains.findOne({'id' : sess.current}, function(err, pair) {
-                if (err){
+                if (err || pair == null){
                     console.log('Error: ', err);
                     render('error');
                 }
@@ -156,7 +156,7 @@ app.get('/train', (req, res) => {
 
 app.post('/train', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
-        if (err){
+        if (err || sess == null){
             console.log('Error: ', err);
             render('error');
         }
