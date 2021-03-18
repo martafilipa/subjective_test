@@ -14,14 +14,14 @@ html
         - var button_R = 'submit'
         - var button_L = 'button'
         - var onclick_R = ''    
-        - var onclick_L = "alert('Please select the more natural image')"
+        - var onclick_L = "alert('The image that was selected is not the most natural one. Could you please inspect the images under comparison again.')"
     else 
         - var left = '(Best)'
         - var right = ''
         - var button_L = 'submit'
         - var button_R = 'button'
         - var onclick_L = ''
-        - var onclick_R = "alert('Please select the more natural image')"
+        - var onclick_R = "alert('The image that was selected is not the most natural one. Could you please inspect the images under comparison again.')"
     form(action='/train' method='POST')
         div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; margin: 0; ')
             div(style = 'padding: 5px; padding-bottom: 0px; padding-top: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
@@ -29,13 +29,13 @@ html
                     strong A 
                     | #{left}
                 image(src=src_L, alt='A', name='0', )
-                button(type=button_L, name="value", value=0, class="btn-test", id='A', onclick=onclick_L) Image A
+                button(type=button_L, name="value", value=0, class="btn-test", id='A', onclick=onclick_L) A more natural than B
             div(style = 'padding: 5px; padding-bottom: 0px; padding-top: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
                 p(style='margin: 0; margin-block: 0; padding-top: 1px; text-align: center; font-size: 21px') 
                     strong B 
                     | #{right}
                 img(src= src_R, alt='B', name='1', style='display: block;')
-                button(type=button_R, name="value", value=1, class="btn-test", id='B', onclick=onclick_R,) Image B
+                button(type=button_R, name="value", value=1, class="btn-test", id='B', onclick=onclick_R,) B more natural than A
     div(style='left: 0; right: 0; bottom:0; padding: 0px; margin: 0px; height: 25px; display: flex; justify-content: center;')
         progress(value=current max=nPairs)
         
