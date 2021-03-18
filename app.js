@@ -7,7 +7,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const  MongoClient = require('mongodb').MongoClient;
 
 // Number of Pairs in test minus 1 
-const nPairs = 360;
+const nPairs = 456;
 const nTrain = 3;
 
 
@@ -60,12 +60,12 @@ app.post('/start', (req, res) => {
         current: 0
     }); 
     client.save(function(err, _) {
-        if (err)
+        if (err){
             console.log('Error: ', err)
-        else
-        {
-            res.redirect(303, '/train');
+            res.redirect(303, '/error');
         }
+        else
+            res.redirect(303, '/train');
     });
 })
 
@@ -73,13 +73,13 @@ app.get('/test', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
         if (err || sess == null){
             console.log('Error: ', err);
-            render('error');
+            res.redirect(303, '/error');
         }
         else{
             Pairs.findOne({'id' : sess.order[sess.current]}, function(err, pair) {
                 if (err || pair == null){
                     console.log('Error: ', err);
-                    render('error');
+                    res.redirect(303, '/error');
                 }
                 else{
                     res.render('test', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B),
@@ -91,21 +91,23 @@ app.get('/test', (req, res) => {
 });
 
 app.post('/test', (req, res) => {
+    console.log('Date: ', Date())
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
         if (err || sess == null){
             console.log('Error: ', err);
-            render('error');
+            res.redirect(303, '/error');
         }
         else{
             if(sess.current >= nPairs - 1){
                 Sessions.updateOne({ 
                     'id': req.session.id }, 
                     {$set: {'current': -1}, 
-                    $push: {'time': Date()}}, 
+                    $push: {'time': Date(), 
+                    'judgments':  req.body.value}}, 
                     function(err, _){
                         if (err){
                             console.log('Error: ', err);
-                            render('error');
+                            res.redirect(303, '/error');
                         }
                         else
                             res.redirect(303, '/end');
@@ -115,13 +117,13 @@ app.post('/test', (req, res) => {
             else{
                 Sessions.updateOne({
                     'id': req.session.id },
-                    {$push: {'time': Date()},
-                    $push: { 'judgments':  req.body.value},
+                    {$push: {'time': Date(),
+                    'judgments':  req.body.value},
                     $inc: {'current': 1}},
                     function(err, _ ){
                         if (err){
                             console.log('Error: ', err);
-                            render('error');
+                            res.redirect(303, '/error');
                         }
                         else
                             res.redirect(303, '/test');
@@ -137,13 +139,13 @@ app.get('/train', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
         if (err || sess == null){
             console.log('Error: ', err);
-            render('error');
+            res.redirect(303, '/error');
         }
         else{
             Trains.findOne({'id' : sess.current}, function(err, pair) {
                 if (err || pair == null){
                     console.log('Error: ', err);
-                    render('error');
+                    res.redirect(303, '/error');
                 }
                 else{
                     res.render('train', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
@@ -158,7 +160,7 @@ app.post('/train', (req, res) => {
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
         if (err || sess == null){
             console.log('Error: ', err);
-            render('error');
+            res.redirect(303, '/error');
         }
         else{
             if(sess.current >= nTrain - 1){
@@ -169,10 +171,10 @@ app.post('/train', (req, res) => {
                     function(err, _){
                         if (err){
                             console.log('Error: ', err);
-                            render('error');
+                            res.redirect(303, '/error');
                         }
                         else
-                            res.redirect(303, '/test');
+                            res.redirect(303, '/start');
                     }
                 );
             }
@@ -184,7 +186,7 @@ app.post('/train', (req, res) => {
                     function(err, _ ){
                         if (err){
                             console.log('Error: ', err);
-                            render('error');
+                            res.redirect(303, '/error');
                         }
                         else
                             res.redirect(303, '/train');
@@ -198,6 +200,28 @@ app.post('/train', (req, res) => {
 
 app.get('/start', (req, res) => {
     res.render('start_test');
+})
+
+app.post('/start_test', (req, res) => {
+    Sessions.findOne({'id' :req.session.id}, function(err, sess){
+        if (err || sess == null){
+            console.log('Error: ', err);    
+            res.redirect(303, '/error');
+        }
+        else{
+            Sessions.updateOne({
+                'id': req.session.id}, 
+                {$push: {'time': Date()}},
+                function(err, _ ){
+                    if (err){
+                        console.log('Error: ', err);
+                        res.redirect(303, '/error');
+                    }
+                    else
+                        res.redirect(303, '/test');
+            });
+        }
+    });
 })
 
 app.get('/end', (req, res) => {
