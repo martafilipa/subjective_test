@@ -19,6 +19,8 @@ const Train = require("./models/Trains");
 var tools = require('./tools');
 
 const connectDB = require("./db");
+const { Session } = require('inspector');
+const { render } = require('pug');
 connectDB();
 
 const uri = 'mongodb://localhost:27017/test';
@@ -34,22 +36,19 @@ app.use("/public", express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret : '2Ayuj5hb#m3rd6x_&zbSA[wTC[Z-Vy', 
     resave : false, 
-    saveUninitialized : false, 
+    saveUninitialized : true, 
 }));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.get('/', async (req, res) => {
-    
+app.get('/', (req, res) => {
     res.render('index');
 })
 
-app.post('/start', async (req, res) => {
-    // console.log("Request: %j", req.body)
-    // console.log("Resolution: ", req.body.resolution.split(','))
-    req.session.isAuth = true;
-    Sessions.insertMany({
+app.post('/start', (req, res) => {
+    console.log('New client: ', req.session.id);
+    const client = new Sessions({
         id: req.session.id, 
         order: tools.get_order(),
         gender: req.body.gender,
@@ -59,137 +58,153 @@ app.post('/start', async (req, res) => {
         resolution: req.body.resolution.split(','),
         time: Date(),
         current: 0
-    })
-        .then((obj) => {
-            console.log("Updated: %j", obj)
+    }); 
+    client.save(function(err, _) {
+        if (err)
+            console.log('Error: ', err)
+        else
+        {
             res.redirect(303, '/train');
-        })
-        .catch((err) => {
-            console.log('Error: ', err);
-        })
-    
-})
-
-app.get('/test', async (req, res) => {
-
-    try {
-        const session = await Sessions.findOne({'id' :req.session.id})
-        try {
-            const pair = await Pairs.findOne({'id' : session.order[session.current]})
-            res.render('test', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
-                current: session.current, nPairs: nPairs});
-        } catch (err) {
-            console.log('Error: ', err);
-            res.render('error')
         }
-    } catch (err) {
-        console.log('Error: ', err);
-        res.render('error')
-    }
+    });
 })
 
-app.post('/test', async (req, res) => {
-
-    try {
-        const session = await Sessions.findOne({'id' :req.session.id})
-        if(session.current >= nPairs - 1){
-            Sessions.updateOne(
-                { 'id': req.session.id }, 
-                {$set: {'current': -1}, 
-                $push: {'time': Date()}}
-            )
-                .then((obj) => {
-                    res.redirect(303, '/end');
-                })
-                .catch((err) => {
-                    console.log('Error: ', err);
-                })
+app.get('/test', (req, res) => {
+    Sessions.findOne({'id' :req.session.id}, function(err, sess){
+        if (err){
+            console.log('Error: ', err);
+            render('error');
         }
         else{
-            Sessions.updateOne(
-                { 'id': req.session.id },
-                {$push: {'time': Date()},
-                $push: { 'judgments':  req.body.value},
-                $inc: {'current': 1} }
-            )
-                .then((obj) => {
-                    res.redirect(303, '/test');
-                })
-                .catch((err) => {
+            Pairs.findOne({'id' : sess.order[sess.current]}, function(err, pair) {
+                if (err){
                     console.log('Error: ', err);
-                })
+                    render('error');
+                }
+                else{
+                    res.render('test', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B),
+                        current: sess.current, nPairs: nPairs});
+                }
+            })
         }
-    }
-        catch (err) {
+    });
+});
+
+app.post('/test', (req, res) => {
+    Sessions.findOne({'id' :req.session.id}, function(err, sess){
+        if (err){
             console.log('Error: ', err);
-            res.render('error')
-        }
-})
-
-app.get('/train', async (req, res) => {
-
-    try {
-        const session = await Sessions.findOne({'id' :req.session.id})
-        try {
-            const pair = await Train.findOne({'id' : session.current})
-            res.render('train', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
-            current: session.current, nPairs: nTrain, ans: pair.res});
-        } catch (err) {
-            console.log('Error: ', err);
-            res.render('error')
-        }
-    } catch (err) {
-        console.log('Error: ', err);
-        res.render('error')
-    }
-})
-
-app.post('/train', async (req, res) => {
-
-    try {
-        const session = await Sessions.findOne({'id' :req.session.id})
-        if(session.current >= nTrain - 1){
-            Sessions.updateOne(
-                { 'id': req.session.id }, 
-                {$set: {'current': 0}, 
-                $push: {'time': Date()}}
-            )
-                .then((obj) => {
-                    res.redirect(303, '/start');
-                })
-                .catch((err) => {
-                    console.log('Error: ', err);
-                })
+            render('error');
         }
         else{
-            Sessions.updateOne(
-                { 'id': req.session.id },
-                {$push: {'time': Date()}, 
-                $inc: {'current': 1} }
-            )
-                .then((obj) => {
-                    res.redirect(303, '/train');
-                })
-                .catch((err) => {
-                    console.log('Error: ', err);
-                })
+            if(sess.current >= nPairs - 1){
+                Sessions.updateOne({ 
+                    'id': req.session.id }, 
+                    {$set: {'current': -1}, 
+                    $push: {'time': Date()}}, 
+                    function(err, _){
+                        if (err){
+                            console.log('Error: ', err);
+                            render('error');
+                        }
+                        else
+                            res.redirect(303, '/end');
+                    }
+                );
+            }
+            else{
+                Sessions.updateOne({
+                    'id': req.session.id },
+                    {$push: {'time': Date()},
+                    $push: { 'judgments':  req.body.value},
+                    $inc: {'current': 1}},
+                    function(err, _ ){
+                        if (err){
+                            console.log('Error: ', err);
+                            render('error');
+                        }
+                        else
+                            res.redirect(303, '/test');
+
+                });
+            }
+        
         }
-    }
-        catch (err) {
-            console.log('Error: ', err);
-            res.render('error')
-        }
+    });
 })
 
-app.get('/start', async (req, res) => {
+app.get('/train', (req, res) => {
+    Sessions.findOne({'id' :req.session.id}, function(err, sess){
+        if (err){
+            console.log('Error: ', err);
+            render('error');
+        }
+        else{
+            Pairs.findOne({'id' : sess.order[sess.current]}, function(err, pair) {
+                if (err){
+                    console.log('Error: ', err);
+                    render('error');
+                }
+                else{
+                    res.render('train', {src_L: path.join('./public/images', pair.A), src_R : path.join('./public/images', pair.B), 
+                        current: sess.current, nPairs: nTrain, ans: pair.res});
+                }
+            })
+        }
+    });
+})
+
+app.post('/train', (req, res) => {
+    Sessions.findOne({'id' :req.session.id}, function(err, sess){
+        if (err){
+            console.log('Error: ', err);
+            render('error');
+        }
+        else{
+            if(sess.current >= nTrain - 1){
+                Sessions.updateOne({ 
+                    'id': req.session.id }, 
+                    {$set: {'current': 0}, 
+                    $push: {'time': Date()}}, 
+                    function(err, _){
+                        if (err){
+                            console.log('Error: ', err);
+                            render('error');
+                        }
+                        else
+                            res.redirect(303, '/test');
+                    }
+                );
+            }
+            else{
+                Sessions.updateOne({
+                    'id': req.session.id },
+                    {$push: {'time': Date()},
+                    $inc: {'current': 1}},
+                    function(err, _ ){
+                        if (err){
+                            console.log('Error: ', err);
+                            render('error');
+                        }
+                        else
+                            res.redirect(303, '/train');
+
+                });
+            }
+        
+        }
+    });
+})
+
+app.get('/start', (req, res) => {
     res.render('start_test');
 })
 
-app.get('/end', async (req, res) => {
+app.get('/end', (req, res) => {
     res.render('end');
 })
 
-app.get('/error', async (req, res) => {
+app.get('/error', (req, res) => {
     res.status(404);
     res.render('error');
 })
