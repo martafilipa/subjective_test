@@ -91,7 +91,6 @@ app.get('/test', (req, res) => {
 });
 
 app.post('/test', (req, res) => {
-    console.log('Date: ', Date())
     Sessions.findOne({'id' :req.session.id}, function(err, sess){
         if (err || sess == null){
             console.log('Error: ', err);
