@@ -7,21 +7,22 @@ html
         title Which image is more natural?
     style
         include style.css
-    body(style='margin: 0')
-    form(action='/test' method='POST')
-        div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; margin: 0')
-            div(style = 'padding: 5px; padding-bottom: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
-                p(style='margin: 0;margin-block: 0; text-align: center; padding-top: 1px; font-family:arial; font-size: 21px') 
-                    strong A
-                image(src=src_L, alt='A', name='0')
-                button(type="submit", name="value", value=0, class="btn-test", id='A') A more natural than B
-            div(style = 'padding: 5px; padding-bottom: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
-                p(style='margin: 0; padding-top: 1px; text-align: center; font-family:arial; font-size: 21px') 
-                    strong B
-                img(src= src_R, alt='B', name='1')
-                button(type="submit", name="value", value=1, class="btn-test", id='B') B more natural than A
-    div(style='padding: 0px; margin: 0px; margin-block: 0; height:25px; display: flex; flex-direction: row; justify-content: center')
-        progress(value=current max=nPairs)
+    body(style='margin: 0; background-color: #BCBCBC; display:flex; flex-direction: column; justify-content: space-evenly;  height: 98vh;')
+        form(action='/test' method='POST')
+            div(style = 'display:flex; flex-direction: row; flex-wrap:wrap; justify-content:space-evenly; margin: 0')
+                div(style = 'padding: 5px; padding-bottom: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
+                    p(style='margin: 0;margin-block: 0; text-align: center; padding-top: 1px; font-family:arial; font-size: 21px') 
+                        strong A
+                    image(src=src_L, alt='A', name='0')
+                    button(type="submit", name="value", value=0, class="btn-test", id='A') A more natural than B
+                div(style = 'padding: 5px; padding-bottom: 0px; margin: 0px; display: flex; flex-shrink: 0; flex-grow: 0; flex-direction:column')
+                    p(style='margin: 0; padding-top: 1px; text-align: center; font-family:arial; font-size: 21px') 
+                        strong B
+                    img(src= src_R, alt='B', name='1')
+                    button(type="submit", name="value", value=1, class="btn-test", id='B') B more natural than A
+        p(style='text-align:center; margin-block: 0') #{current+1}/#{nPairs} 
+        div(style='padding: 0px; margin: 0px; margin-block: 0; height:25px; display: flex; flex-direction: row; justify-content: center')
+            progress(value=current max=nPairs)
  
     
     script.

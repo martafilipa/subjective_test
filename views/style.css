@@ -141,7 +141,9 @@ progress {
     width: 99%;
     height: 50%;
     align-self: center;
+    text-align: center;
 } 
+
 progress::-webkit-progress-bar { 
     background-color: #DBDDDE;
     border-radius: 50px;

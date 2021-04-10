@@ -7,7 +7,7 @@ html
         title GAN Subjective Assessment 
     style
         include style.css
-    body(style='background-color: #f4fffd')
+    body(style='display:flex;  flex-direction: column; justify-content: space-evenly;  height: 98vh; rowbackground-color: #f4fffd')
     h1(style='text-align: center; font-size: 2.5em;') Subjective assessment study of generative adversarial network (GAN) <br>based image processing solutions
     div(class='box', id='box2')
         h2(style='font-size: 2em; margin:0.4em') 
@@ -31,11 +31,10 @@ html
                 strong training phase 
                 | that serves the purpose of familiarize you 
                 | with the test environment. 
-            p(style='margin-block: 0.5em 0;text-align: justify; text-justify: inter-word;')
+
                 | When the training phase is completed starts the 
                 strong test phase 
                 | where, as described previously, your assessments will be collected.
-            p(style='margin-block: 0.5em 0;text-align: justify; text-justify: inter-word;')
                 | This test should take approximately 30 minutes.
 
     div(class='box', style='padding-bottom: 40px', id='box_form')
@@ -56,13 +55,11 @@ html
                         | Male
                         input#female(type='radio', name='gender', value='female')
                         | Female
-                        input#other(type='radio', name='gender', value='other')
-                        |Other
                     div(style = 'display: inline-block; align-content: center')
                         | Display 
                         small [in]
                         | :
-                        input(type='number', name='display', value='', min="10", max="60", required)
+                        input(type='number', name='display', value='', min="13", max="100", required)
                     div(style = 'display: inline-block; align-content: center; margin-top:')
                         button(id="start_button",type="submit") Start
     script.
