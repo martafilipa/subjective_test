@@ -92,6 +92,17 @@ input[type=text] {
     border: 0px;
     font-family:inherit;
 }
+input[type=email] {
+    width: 250px;
+    padding: 3px 10px;
+    margin: 0;
+    margin-left: 10px;
+    resize: vertical;
+    font-size: 0.8em;
+    background-color: #f4fffd;
+    border: 0px;
+    font-family:inherit;
+}
 
 input[type=number] {
     width: 70px;
@@ -106,11 +117,11 @@ input[type=number] {
     font-family:inherit;
 }
 
-input[type=text]:hover, input[type=number]:hover {
+input[type=text]:hover, input[type=email]:hover, input[type=number]:hover {
     border-bottom: 3px solid #009de0;
 }
 
-input[type=text]:focus, input[type=number]:focus {
+input[type=text]:focus, input[type=email]:focus, input[type=number]:focus {
     outline:none !important;
     border-bottom: 3px solid #006794;
 }

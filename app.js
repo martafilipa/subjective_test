@@ -43,7 +43,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.get('/', (req, res) => {
-    res.render('index');
+    console.log(req.query.err)
+    if(req.query.err == 'true')
+        res.render('index', {errorCont: req.query.err});
+    else 
+        res.render('index', {errorCont: false});
 })
 
 app.post('/start', (req, res) => {
@@ -55,6 +59,7 @@ app.post('/start', (req, res) => {
         display: req.body.display, 
         age: req.body.age, 
         name: req.body.name, 
+        email: req.body.email,
         resolution: req.body.resolution.split(','),
         time: Date(),
         current: 0
@@ -199,6 +204,27 @@ app.post('/train', (req, res) => {
 
 app.get('/start', (req, res) => {
     res.render('start_test');
+})
+
+app.post('/continue', (req, res) => {
+    Sessions.findOne({'email' :req.body.email}, function(err, sess){
+        if (err || sess == null){
+            console.log('Email not found.');
+            res.redirect(303, '/?err=true');
+        }
+        else{
+            Sessions.updateOne({
+                'id': req.session.id},
+                function(err, _ ){
+                    if (err){
+                        console.log('Error: ', err);
+                        res.redirect(303, '/error');
+                    }
+                    else
+                        res.redirect(303, '/test');
+                });
+        }
+    });
 })
 
 app.post('/start_test', (req, res) => {
