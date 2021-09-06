@@ -13,6 +13,12 @@ const pairsSchema = new Schema({
     B: {
       type: String,
     },
+    ref_A: {
+      type: String,
+    }, 
+    ref_B: {
+      type: String,
+    }
   });
   
 module.exports = mongoose.model("Pairs", pairsSchema);
