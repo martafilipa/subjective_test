@@ -1,4 +1,4 @@
-id.int32();A.string();B.string();res.boolean()
-0;00001_HiFiC_lo.png;00001_original.png;1
-1;00015_original.png;00015_ESRGAN_lo.png;0
-2;00001_ArNet_lo.png;00001_original.png;1
+id.int32(),A.string(),B.string(),res.boolean()
+0,00001_HiFiC_lo.png,00001_original.png,1
+1,00015_original.png,00015_ESRGAN_lo.png,0
+2,00001_ArNet_lo.png,00001_original.png,1
