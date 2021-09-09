@@ -43,7 +43,7 @@ mongoimport --type csv -d test -c pairs --headerline --columnsHaveTypes --file .
 
 The result should be the insertion of 456 documents in the `pairs` collection and 3 documents in the `trains` collection. 
 
-With the server running and the database updated, try access the webpage.
+With the server running and the database updated, try to access the webpage.
 
 ## Custom Subjective Assessments
 
@@ -51,7 +51,7 @@ With the server running and the database updated, try access the webpage.
 
 This application targets displays of resolution greater than or equal to `1080p`. As such, the recommended test image size is `940 x 880`.
 
-The image files are to be saved in the [public/images/test](public/images/test) folder and are to follow this naming convention: 
+The image files need to be saved in the [public/images/test](public/images/test) folder and follow this naming convention: 
 
 `{reference image ID}_{other identifiers}.{file extension}`
 
@@ -66,9 +66,9 @@ The database is composed of 3 collections:
 
 The `sessions` collection contains the data of each user and it's updated by the webapp during runtime. 
 
-The `pairs` and `trains` collections on the other hand are define beforehand and are used to identify the pairs included in the test. These collections need to be populated by the user according to the desired subjective test. This is done by providing a .csv file to the database. 
+The `pairs` and `trains` collections on the other hand are defined beforehand and are used to identify the pairs included in the test. These collections need to be populated by the user accordingly to the desired subjective test. This is done by importing a CSV file into the database. 
 
-The `DB_csv_creator.py` script in [database/](database/) folder provides an easy way to get the CSV file to populate the `pairs` collection for a given dataset. 
+The `DB_csv_creator.py` script in [database/](database/) folder provides an easy way to generate the CSV file to populate the `pairs` collection for a given dataset. 
 
 Example of usage: 
 
@@ -77,14 +77,14 @@ python ./database/DB_csv_creator.py --name pairs_shell --folder ./public/images/
        --database shell --mode complete --out ./database
 ```
 
-Note: other functions to create the test pairs can be implemented simply adding a new `mode` option. Currently only supporting complete design (`complete`) and complete design for test material sharing the same reference image (`intra`).
+Note: other functions to create the test pairs can be implemented by simply adding a new `mode` option. Currently the script supports complete design (`complete`) and complete design for test material sharing the same reference image (`intra`).
 
-Regarding the `trains` collection and its CSV files, its typically manually constructed. This is due to the fact that the examples are very few resulting in only a couple of lines in the CSV file. 
+Regarding the `trains` collection and its CSV files, it's typically manually constructed. This is due to the fact that the examples are very few resulting in only a couple of lines in the CSV file. 
 
 These files are used to populate the `pairs` and `trains` collections as described [here](#testing-with-provided-images).
 
 ### Other changes 
 
-In order to add a different text to the instructions page the `index.pug` file in the [views/](views/) folder needs to be changed. 
+In order to add a different text to the instructions page, the `index.pug` file in the [views/](views/) folder can be changed. 
 
 The color scheme and other aspects of the design can be tweaked by changing the `style.css` file in the [views/](views/).
